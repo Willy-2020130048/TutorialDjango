@@ -1,4 +1,5 @@
 from django import template
+from django.db import connection
 
 register = template.Library()
 
@@ -29,3 +30,10 @@ def currency_idr(value):
         return f"{value:,}".replace(",", ".")
     except (ValueError, TypeError):
         return value
+
+@register.simple_tag
+def get_total(price, qty):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT calculate_total(%s, %s)", [price, qty])
+        total = cursor.fetchone()[0]
+    return total

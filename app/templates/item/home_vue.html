@@ -20,7 +20,6 @@
         axios.defaults.withCredentials = true
     </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 </head>
 <body>
     <div id="app" class="container mt-4">
@@ -70,33 +69,33 @@
                             {% csrf_token %}
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control mt-4"
                                 v-model="form.item_no"
                                 placeholder="Item No"
                             >
 
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control mt-4"
                                 v-model="form.item_name"
                                 placeholder="Item Name"
                             >
 
                             <input
                                 type="number"
-                                class="form-control"
+                                class="form-control mt-4"
                                 v-model="form.stock"
                                 placeholder="Stock"
                             >
 
                             <input
                                 type="number"
-                                class="form-control"
+                                class="form-control mt-4"
                                 v-model="form.harga"
                                 placeholder="Harga"
                             >
 
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary mt-4">
                                 Save
                             </button>
                         </form>

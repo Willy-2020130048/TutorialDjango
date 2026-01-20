@@ -1,5 +1,6 @@
 import json
 
+from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -80,9 +81,9 @@ def detail(request, item_id):
     return render(request, "item/form.html", context)
 
 def delete(request, item_id):
-    item = get_object_or_404(Item, item_id=item_id)
-    item.delete()
-    return JsonResponse({"success": True, "id": item_id})
+    with connection.cursor() as cursor:
+        cursor.execute("CALL log_delete(%s)", [item_id])
+    return JsonResponse({'status': 'success', 'item_id': item_id})
 
 def requestView(request):
     url = "http://www.omdbapi.com/?apikey=93a071b5&s=batman&page=1"
