@@ -1,0 +1,23 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.rtl.css' %}">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="container">
+            <div class="row p-4">
+                {% for movie in items %}
+                    <div class="col-md-4 mb-4">
+                        {% card movie.Title movie.Year movie.Poster %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

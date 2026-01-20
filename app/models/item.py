@@ -7,6 +7,7 @@ class Item(Model):
     item_no = CharField(null=False, blank=False, max_length=20)
     item_name = CharField(null=False, blank=False, max_length=100)
     stock = IntegerField(null=False, blank=False, default=0)
+    harga = IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         # managed = False

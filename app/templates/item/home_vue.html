@@ -31,6 +31,7 @@
                     <th>Item No</th>
                     <th>Item Name</th>
                     <th>Stock</th>
+                    <th>Harga</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -41,6 +42,7 @@
                     </td>
                     <td v-text="item.item_name"></td>
                     <td v-text="item.stock"></td>
+                    <td v-text="item.harga"></td>
                     <td>
                         <button
                             class="btn btn-danger btn-sm"
@@ -82,6 +84,13 @@
                                 placeholder="Stock"
                             >
 
+                            <input
+                                type="number"
+                                class="form-control"
+                                v-model="form.harga"
+                                placeholder="Harga"
+                            >
+
                             <button type="submit" class="btn btn-primary">
                                 Save
                             </button>
@@ -100,6 +109,7 @@
                     item_no: '',
                     item_name: '',
                     stock: '',
+                    harga: ''
                 }
             },
             mounted() {

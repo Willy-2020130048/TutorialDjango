@@ -1,6 +1,7 @@
 {% load static %}
 {% load widget_tweaks %}
 {% load crispy_forms_tags %}
+{% load custom_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,26 +25,25 @@
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th>Item Id</th>
-                    <th>Item No</th>
                     <th>Item Name</th>
                     <th>Stock</th>
+                    <th>Harga</th>
+                    <th>Total Harga</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                     <tr id="row-{{ item.item_id }}">
-                        <td>{{ item.item_id }}</td>
-                        <td>{{ item.item_no }}</td>
-                        <td>{{ item.item_name }}</td>
-                        <td>{{ item.stock }}</td>
                         <td>
-                            <a href="{% url 'item_detail' item.item_id %}"
-                               class="btn btn-sm btn-info">
-                                Detail
+                            <a href="{% url 'item_detail' item.item_id %}">
+                                {% format_name item.item_no item.item_name|upper_name %}
                             </a>
-
+                        </td>
+                        <td>{{ item.stock|currency_idr }}</td>
+                        <td>{{ item.harga|currency_idr }}</td>
+                        <td>{% (multiply item.stock item.harga)|currency_idr%}</td>
+                        <td>
                             <button class="btn btn-danger btn-sm" onclick="deleteItem({{ item.item_id }})">
                                 Delete
                             </button>
@@ -77,6 +77,11 @@
                             <div class="mb-3">
                                 <label class="form-label">Stock</label>
                                 {{ form.stock|add_class:"form-control" }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Harga</label>
+                                {{ form.harga|add_class:"form-control" }}
                             </div>
 
                             <div class="d-flex justify-content-end">
