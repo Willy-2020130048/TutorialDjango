@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Item Management</title>
+    <title>Sales Management</title>
 
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.rtl.css' %}">
@@ -24,29 +24,26 @@
 </head>
 <body>
     <div id="app" class="container mt-4">
-        <!-- Item Table -->
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th>Item No</th>
+                    <th>Sales No</th>
                     <th>Item Name</th>
-                    <th>Stock</th>
-                    <th>Harga</th>
+                    <th>Quantity</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in items" :key="item.item_id">
+                <tr v-for="sale in sales" :key="sale.sales_id">
                     <td>
-                        <a :href="`/item/${item.item_id}`" v-text="item.item_no"></a>
+                        <a :href="`/sales/${sale.sales_id}`" v-text="sale.sales_no"></a>
                     </td>
-                    <td v-text="item.item_name"></td>
-                    <td v-text="item.stock"></td>
-                    <td v-text="item.harga"></td>
+                    <td v-text="sale.item.item_name"></td>
+                    <td v-text="sale.quantity"></td>
                     <td>
                         <button
                             class="btn btn-danger btn-sm"
-                            @click="deleteItem(item.item_id)"
+                            @click="deleteSales(sale.sales_id)"
                         >
                             Delete
                         </button>
@@ -54,49 +51,39 @@
                 </tr>
             </tbody>
         </table>
-        <div class="container mt-4">
-            <button class="btn btn-primary btn-sm" @click="exportData">
-                Export Data
-            </button>
-        </div>
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Create Item</h5>
+                        <h5 class="mb-0">Create Sales</h5>
                     </div>
                     <div class="card-body">
                         <form @submit.prevent="submitForm" method="post">
                             {% csrf_token %}
                             <input
                                 type="text"
-                                class="form-control"
-                                v-model="form.item_no"
-                                placeholder="Item No"
+                                class="form-control mt-4"
+                                v-model="form.sales_no"
+                                placeholder="Sales No"
                             >
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                v-model="form.item_name"
-                                placeholder="Item Name"
-                            >
-
-                            <input
-                                type="number"
-                                class="form-control"
-                                v-model="form.stock"
-                                placeholder="Stock"
-                            >
+                            <select v-model="form.item" class="form-control mt-4">
+                                <option
+                                    v-for="item in items"
+                                    :key="item.item_id"
+                                    :value="item.item_id"
+                                    v-text="item.item_name">
+                                </option>
+                            </select>
 
                             <input
                                 type="number"
-                                class="form-control"
-                                v-model="form.harga"
-                                placeholder="Harga"
+                                class="form-control mt-4"
+                                v-model="form.quantity"
+                                placeholder="Quantity"
                             >
 
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary mt-4">
                                 Save
                             </button>
                         </form>
@@ -109,31 +96,45 @@
         new Vue({
             el: '#app',
             data: {
+                sales: '',
                 items: '',
                 form: {
-                    item_no: '',
-                    item_name: '',
-                    stock: '',
-                    harga: ''
+                    sales_no: '',
+                    item: '',
+                    quantity: '',
                 }
             },
             mounted() {
                 this.fetchItems();
+                this.fetchSales();
             },
             methods: {
                 fetchItems() {
                     axios.get('/item/vue/fetch')
                         .then(response => {
                             this.items = response.data;
+                            if (this.items.length > 0) {
+                                this.form.item = this.items[0].item_id;
+                            }
                         })
                         .catch(error => {
                             console.error("There was an error fetching items!", error);
                         });
                 },
-               deleteItem(itemId) {
-                    axios.post(`/item/vue/delete/${itemId}`)
+                fetchSales() {
+                    axios.get('/sales/fetch')
+                        .then(response => {
+                            this.sales = response.data;
+                            console.log(this.sales);
+                        })
+                        .catch(error => {
+                            console.error("There was an error fetching sales!", error);
+                        });
+                },
+               deleteSales(salesId) {
+                    axios.post(`/sales/delete/${salesId}`)
                         .then(() => {
-                            this.items = this.items.filter(i => i.item_id !== itemId)
+                            this.sales = this.sales.filter(i => i.sales_id !== salesId)
                         })
                },
                submitForm() {
@@ -143,34 +144,26 @@
                         formData.append(key, this.form[key])
                     })
 
-                    axios.post('/item/vue', formData)
+                    axios.post('/sales/', formData)
                         .then(response => {
-                            this.items.push(response.data);
+                            const newSale = {
+                                sales_id: response.data.sales_id,
+                                sales_no: response.data.sales_no,
+                                item: response.data.item,
+                                quantity: response.data.quantity
+                            };
+                            this.sales.push(newSale);
                             this.resetForm();
                         })
                         .catch(error => {
-                            console.error("Error creating item:", error);
+                            console.error("Error creating sales:", error);
                         });
                 },
                 resetForm() {
-                    this.form.item_no = '';
-                    this.form.item_name = '';
-                    this.form.stock = '';
-                    this.form.harga = '';
+                    this.form.sales_no = '';
+                    this.form.item = this.items[0].item_id;
+                    this.form.quantity = '';
                 },
-                exportData() {
-                    axios.post('/item/export', {
-                        items: this.items
-                    }, {
-                        responseType: 'blob'
-                    }).then(response => {
-                        const blob = new Blob([response.data]);
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = 'items.xlsx';
-                        link.click();
-                    });
-                }
             }
         });
     </script>
