@@ -42,7 +42,8 @@
                         </td>
                         <td>{{ item.stock|currency_idr }}</td>
                         <td>{{ item.harga|currency_idr }}</td>
-                        <td>{% (multiply item.stock item.harga)|currency_idr%}</td>
+                        {% multiply item.stock item.harga as total %}
+                        <td>{{ total|currency_idr }}</td>
                         <td>
                             <button class="btn btn-danger btn-sm" onclick="deleteItem({{ item.item_id }})">
                                 Delete
