@@ -1,0 +1,59 @@
+{% load static %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Management</title>
+
+    <!-- AdminLTE CSS -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.rtl.css' %}">
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-3gJwYp8pNQ6F7sH0uV5pQJY1iM0PpH+0O1p4u7r2B2c="
+        crossorigin="anonymous"></script>
+    
+    <!-- AdminLTE JS -->
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Create Item</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="createItemForm" method="post">
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label class="form-label">Item No</label>
+                                {{ form.item_no|add_class:"form-control" }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Item Name</label>
+                                {{ form.item_name|add_class:"form-control" }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Stock</label>
+                                {{ form.stock|add_class:"form-control" }}
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success me-2">Save</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

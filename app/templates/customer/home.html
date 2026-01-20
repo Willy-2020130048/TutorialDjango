@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.rtl.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-3gJwYp8pNQ6F7sH0uV5pQJY1iM0PpH+0O1p4u7r2B2c="
+        crossorigin="anonymous"></script>
+    <script href="{% static 'dist/js/adminlte.min.js' %}"></script>
+    <script type="module" src="{% static 'dist/js/utils.js' %}"></script>
+    <script type="module" src="{% static 'dist/js/customer.js' %}"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <a href="{% url 'customer_add' %}" class="btn btn-sm btn-info">
+            Add Customer
+        </a>
+    </div>
+    <div class="container mt-4">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Customer Id</th>
+                    <th>Customer No</th>
+                    <th>Customer Name</th>
+                    <th>Customer Address</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                    <tr id="row-{{ customer.customer_id }}">
+                        <td>{{ customer.customer_id }}</td>
+                        <td>{{ customer.customer_no }}</td>
+                        <td>{{ customer.customer_name }}</td>
+                        <td>{{ customer.customer_address }}</td>
+                        <td>
+                            <!-- DETAIL -->
+                            <a href="{% url 'customer_detail' customer.customer_id %}"
+                               class="btn btn-sm btn-info">
+                                Detail
+                            </a>
+
+                            <button class="btn btn-danger btn-sm" onclick="deleteCustomer({{ customer.customer_id }})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
